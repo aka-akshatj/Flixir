@@ -1,0 +1,96 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+:root{
+    --main-blue: #3D4FC3;
+    --main-blue-dark: #2B3890;
+    --main-purple: #9e67d5;
+    --main-purple-dark: #8659B9;
+    --light: #fff;
+    --light-2: #f1f1f1;
+    --inactive: #9c9c9c;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body,
+button,
+input,
+textarea {
+    font-family: 'Open Sans', sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    width: 100%;
+}
+
+body{
+    background-color: var(--light-2);
+}
+
+.containers{
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 rem;
+    position: relative;
+}
+
+.flxr{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flxc{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.main-btn{
+    background-color: var(--main-blue);
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+}
+
+.main-btn:hover{
+    transition: all 0.25s ease-in-out;
+    background-color: var(--main-blue-dark);
+}
+
+.divider{
+    color: var(--inactive);
+    
+}
+
+@media screen and (max-width:1316px){
+    .containers{
+        padding: 0 2rem;
+    }
+}
+@media screen and (max-width:550px){
+    .containers{
+        padding: 0 1rem;
+    }
+}
