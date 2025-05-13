@@ -12,7 +12,7 @@ import Navbar from "./containers/Navbar/Navbar";
 // import AddPost from "./Pages/AddPost";
 // import Saved from "./Pages/Saved";
 // import Account from "./Pages/Account";
-// import MobileMenu from "./containers/MobileMenu/MobileMenu";
+import MobileMenu from "./containers/MobileMenu/MobileMenu";
 // import Auth from "./containers/Auth/Auth";
 // import PostDetails from "./components/PostDetails/PostDetails";
 
@@ -31,7 +31,7 @@ function App() {
         {/* Navbar */}
         <Navbar></Navbar>
         {/* Mobile-Menu */}
-        
+        <MobileMenu></MobileMenu>
       </div>
     </Router>
   );

@@ -1,0 +1,33 @@
+.mobile-menu-container{
+    background-color: var(--light);
+    height: 4rem;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0px 20px 10px rgba(0, 0, 0, 0.05);
+
+    display: none;
+}
+
+.mobile-menu-link{
+    color: var(--inactive);
+}
+
+.mobile-menu-link-active{
+    color: var(--main-blue);
+}
+
+.mobile-menu-icon{
+    font-size: 1.2rem;
+}
+
+@media screen and (max-width:1020px){
+    .mobile-menu-container{
+        display:flex;
+    }
+}
