@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Navbar from "./containers/Navbar/Navbar";
 // import UserPanel from "./containers/UserPanel/UserPanel";
-
+import HomePage from "./Pages/HomePage";
 import MobileMenu from "./containers/MobileMenu/MobileMenu";
 import Auth from "./containers/Auth/Auth";
 
@@ -44,7 +44,9 @@ function App() {
                   )
                 }
               ></Route>
-              
+
+              <Route path="/posts" element={<HomePage></HomePage>}></Route>
+              <Route path="/auth" element={<Auth />}></Route>
             </Routes>
           </div>
         </div>

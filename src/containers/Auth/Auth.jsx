@@ -84,11 +84,11 @@ const Auth = () => {
       <div className="auth-form-container">
         <div to="/posts" className="logo">
           <img src={PolaroidLogo} alt="Polaroid-Logo" />
-          <h1 className="logo-text">Polaroid</h1>
+          <h1 className="logo-text">Social Spectra</h1>
         </div>
         <div className="auth-title">
           {isSignUp
-            ? "Welcome to Polaroid! Sign Up to see polaroids from your friends."
+            ? "Welcome to Social Spectra! Sign Up to see posts from your friends."
             : "Welcome Back! Sign in to connect with your friends."}
         </div>
         <form onSubmit={handleSubmit} className="auth-form">
