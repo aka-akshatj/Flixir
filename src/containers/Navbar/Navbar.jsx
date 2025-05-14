@@ -37,13 +37,13 @@ const Navbar = () => {
       <div className="containers navbar-content">
         <Link to="/" className="logo">
           <img src={PolaroidLogo} alt="Polaroid-Logo" />
-          <h1 className="logo-text">Social Spectra</h1>
+          <h1 className="logo-text">FliXiR</h1>
         </Link>
         {/* <div className="navbar-searchbar">
                     <input
                         type="text"
                         className="search-input"
-                        placeholder="Search a Post"
+                        placeholder="Search a Flix"
                     />
                     <button className="search-submit-btn">
                         <FontAwesomeIcon
@@ -79,8 +79,7 @@ const Navbar = () => {
           ) : (
             <Link to="/auth" className="main-btn login-btn">
               Log in
-              </Link>
-              
+            </Link>
           )}
         </div>
       </div>

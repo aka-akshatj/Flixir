@@ -82,7 +82,7 @@ const UserPanel = () => {
             <div className="nav-link-logo">
               <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon>
             </div>
-            <div className="nav-link-text">Create a Post</div>
+            <div className="nav-link-text">Create a Flix</div>
           </div>
           {/* <NavLink
             to="/saved"
@@ -93,7 +93,7 @@ const UserPanel = () => {
             <div className="nav-link-logo">
               <FontAwesomeIcon icon={faBookmark}></FontAwesomeIcon>
             </div>
-            <div className="nav-link-text">Saved Posts</div>
+            <div className="nav-link-text">Saved Flixs</div>
           </NavLink>
           <NavLink
             to="/account"
@@ -108,7 +108,7 @@ const UserPanel = () => {
           </NavLink> */}
         </div>
         <div className="footer">
-          Social Spectra | &copy; Copyright 2025 
+          Flixir | &copy; Copyright 2025 
         </div>
       </div>
     </div>
