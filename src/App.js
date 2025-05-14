@@ -7,12 +7,20 @@ import {
   Navigate,
 } from "react-router-dom";
 import Navbar from "./containers/Navbar/Navbar";
-import UserPanel from "./containers/UserPanel/UserPanel";
+// import UserPanel from "./containers/UserPanel/UserPanel";
+
 import MobileMenu from "./containers/MobileMenu/MobileMenu";
+import Auth from "./containers/Auth/Auth";
+
 
 function App() {
-  
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
 
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, []);
+
+  console.log(user);
 
   return (
     <Router>
@@ -21,10 +29,24 @@ function App() {
         <Navbar></Navbar>
         {/* Mobile-Menu */}
         <MobileMenu></MobileMenu>
-
+        {/* Page Content */}
         <div className="page-body">
           {/* <div className="userPanel">{<UserPanel></UserPanel>}</div> */}
-          
+          <div className="pages containers">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  user !== null ? (
+                    <Navigate to="/posts"></Navigate>
+                  ) : (
+                    <Navigate to="/auth"></Navigate>
+                  )
+                }
+              ></Route>
+              
+            </Routes>
+          </div>
         </div>
       </div>
     </Router>
