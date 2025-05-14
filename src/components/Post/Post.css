@@ -1,0 +1,126 @@
+.post-container{
+    width: 100%;
+    background-color: var(--light);
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0.6rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.post-header{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+
+.userimg{
+    width: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user-name{
+    font-weight: 500;
+    font-size: 1rem;
+    font-family: "Poppins",sans-serif;
+}
+
+.edit-btn{
+    margin-left: auto;
+}
+
+
+.post-img{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid red; */
+    overflow: hidden;
+    border-radius: 0.2rem;
+    border: 0.5px solid var(--inactive);
+    cursor: pointer;
+}
+
+.post-title-time{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-title{
+    font-weight: 600;
+    font-size: 1.1rem;
+    font-family: 'Poppins',sans-serif;
+}
+
+.post-time{
+    color: var(--inactive);
+    font-size: 0.8rem;
+}
+
+.post-caption{
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+.post-stats{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+
+.post-stat{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.save-stat{
+    margin-left: auto;
+}
+
+.stat-btn{
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.2rem;
+    color: var(--inactive);
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.stat-btn:hover{
+    color: var(--main-blue);
+    transition: all 0.25s ease;
+}
+
+.like-btn{
+    color: var(--main-blue);
+}
+
+button:disabled{
+    cursor: not-allowed;
+}
+
+.stat-count{
+    font-size: 0.9rem;
+}
+
+@media screen and (max-width:550px){
+    .post-container{
+        border-radius: 0;
+        padding: 1rem;
+    }
+}
