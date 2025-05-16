@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const API = axios.create({ baseURL: "https://polaroid-webapp.herokuapp.com/" });
-const API = axios.create({ baseURL: "http://localhost:3000/" });
+const API = axios.create({ baseURL: "http://localhost:5000/" });
 
 //send token to backend
 API.interceptors.request.use((req) => {
