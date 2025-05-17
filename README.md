@@ -27,10 +27,10 @@ The main purpose behind this project was to learn :
 1. Authentication Page
 
    - The user is first greeted with the login screen. If he/she had manually created their account then they will have to login using username and password. If they had signed up using Google then they can login using Google
-     ![Login Screen](../Flixir/Client/images/login_screen.png)
+     ![Login Screen](Client/images/login_screen.png)
 
    - If the user is a first time visitor, they can create their account or signup using Google
-     ![Signup Screen](../Flixir/Client/images/signup.png)
+     ![Signup Screen](Client/images/signup.png)
 
 <br/>
 
@@ -45,21 +45,21 @@ The main purpose behind this project was to learn :
    - `Home` : Takes the user to the homepage if the user is logged in. If the user is not logged in or login token has expired, the user is taken to the authentication page when they click on the `Home` button
 
    - `Create a polaroid` : Opens up a modal for the user to upload a post.
-     ![Create a modal](../Flixir/Client/images/create.png)
+     ![Create a modal](Client/images/create.png)
 
 <br/>
 
 4. Post
    - The top section has the username and the edit and delete icons (only for the posts created by the user)
      <br/>
-     ![postcard](../Flixir/Client/images/postone.png)
+     ![postcard](Client/images/postone.png)
    - The edit button opens up the modal with the previous data already populated.
      <br/>
-     ![edit modal](../Flixir/Client/images/edit.png)
+     ![edit modal](Client/images/edit.png)
    - The delete button simply deletes that post
    - The bottom section of the post contains the like button and the comment button.
    - Clicking on the post opens up the post page. Users can comment here.
-     ![postpage](../Flixir/Client/images/post.png)
+     ![postpage](Client/images/post.png)
 
 <br/>
 
@@ -76,6 +76,7 @@ The main purpose behind this project was to learn :
   1. `Node and Express` - Server and API
   2. `Google OAuth` - Google sign in
   3. `MongoDB and Mongoose` - Database for storing user information and posts
+  4. `Netlify` - Frontend Hosting
   4. `Heroku` - Hosting backend
 
 ## Environment Setup
