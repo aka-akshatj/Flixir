@@ -37,7 +37,7 @@ const Navbar = () => {
       <div className="containers navbar-content">
         <Link to="/" className="logo">
           <img src={PolaroidLogo} alt="Polaroid-Logo" />
-          <h1 className="logo-text">FliXiR</h1>
+          <h1 className="logo-text text-4xl">FliXiR</h1>
         </Link>
         {/* <div className="navbar-searchbar">
                     <input

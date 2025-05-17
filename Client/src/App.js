@@ -28,11 +28,11 @@ function App() {
   return (
     <Router>
       <div>
-        {/* Navbar */}
+        
         <Navbar></Navbar>
-        {/* Mobile-Menu */}
+      
         <MobileMenu></MobileMenu>
-        {/* Page Content */}
+        
         <div className="page-body">
           {/* <div className="userPanel">{<UserPanel></UserPanel>}</div> */}
           <div className="pages containers">

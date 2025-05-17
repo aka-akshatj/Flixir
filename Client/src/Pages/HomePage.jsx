@@ -22,10 +22,10 @@ const HomePage = () => {
         <Form currentID={currentID} setCurrentID={setCurrentID}></Form>
       )}
       <div className="homepage">
-        <div className="p-container">
+        <div className="">
           <Posts setCurrentID={setCurrentID}></Posts>
         </div>
-        <div className="up-container">
+        <div className="">
           <UserPanel></UserPanel>
         </div>
       </div>

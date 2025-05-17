@@ -6,19 +6,5 @@
     width: 100%;
 }
 
-.up-container{
-    flex: 1;
-    position: sticky;
-    top: 7rem;
-}
 
-.p-container{
-    flex: 3;
-    width: 100%;
-}
 
-@media screen and (max-width: 1020px){
-    .up-container{
-        display: none;
-    }
-}
