@@ -43,16 +43,32 @@ export const signin = async (req, res) => {
 
 export const signup = async (req, res) => {
   //get the user details
-  const { email, password, firstName, lastName, userName, confirmPassword } =
-    req.body;
+  const {
+    email,
+    password,
+    firstName,
+    lastName,
+    username,
+    confirmPassword,
+    about,
+    profilePicture,
+  } = req.body;
 
   try {
+    // Validate required fields
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
     //find if the email already exists
     const existingUser = await User.findOne({ email });
-
-    //if email exists
     if (existingUser)
       return res.status(400).json({ message: "Email already exists!" });
+
+    //find if the username already exists
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername)
+      return res.status(400).json({ message: "Username already taken!" });
 
     //if user doesn't exist, then check the passwords
     if (password !== confirmPassword)
@@ -65,8 +81,11 @@ export const signup = async (req, res) => {
     const result = await User.create({
       email,
       password: hashedPassword,
-      name: `${firstName} ${lastName}`,
-      username: userName,
+      name:
+        firstName && lastName ? `${firstName} ${lastName}` : firstName || "",
+      username,
+      about: about || "",
+      profilePicture: profilePicture || "",
     });
 
     //create token
@@ -77,8 +96,9 @@ export const signup = async (req, res) => {
     //return the user
     res.status(200).json({ result, token });
   } catch (error) {
+    console.error("Signup error:", error);
     res.status(500).json({
-      message: "Someting went wrong. Please try again!",
+      message: "Something went wrong. Please try again!",
     });
   }
 };
@@ -176,6 +196,83 @@ export const getSavedPosts = async (req, res) => {
     res.status(200).json(savedPosts);
   } catch (error) {
     console.error("Get saved posts error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { username, name, about, profilePicture } = req.body;
+
+    console.log("Update profile request:", {
+      userId,
+      username,
+      name,
+      about,
+      profilePictureLength: profilePicture ? profilePicture.length : 0,
+    });
+
+    if (!username) {
+      return res.status(400).json({ message: "Username is required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    console.log("Current user:", {
+      id: user._id,
+      username: user.username,
+      name: user.name,
+      about: user.about,
+      hasProfilePicture: !!user.profilePicture,
+    });
+
+    // Check if username is already taken by another user
+    if (username !== user.username) {
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already taken" });
+      }
+    }
+
+    // Update user fields
+    user.username = username;
+    user.name = name || user.name || "";
+    user.about = about !== undefined ? about : user.about;
+    user.profilePicture =
+      profilePicture !== undefined ? profilePicture : user.profilePicture;
+
+    console.log("Updated user fields:", {
+      username: user.username,
+      name: user.name,
+      about: user.about,
+      profilePictureLength: user.profilePicture
+        ? user.profilePicture.length
+        : 0,
+    });
+
+    await user.save();
+
+    // Return updated user without password
+    const updatedUser = await User.findById(userId).select("-password");
+
+    console.log("Profile updated successfully:", {
+      id: updatedUser._id,
+      username: updatedUser.username,
+      name: updatedUser.name,
+      about: updatedUser.about,
+      hasProfilePicture: !!updatedUser.profilePicture,
+    });
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
     res.status(500).json({ message: error.message });
   }
 };

@@ -10,6 +10,7 @@ export const DELETE = "DELETE";
 export const LIKE = "LIKE";
 export const SAVE_POST = "SAVE_POST";
 export const FETCH_SAVED_POSTS = "FETCH_SAVED_POSTS";
+export const UPDATE_PROFILE = "UPDATE_PROFILE";
 export const SHOW_FORM = "SHOW_FORM";
 export const LOGOUT = "LOGOUT";
 export const AUTH = "AUTH";

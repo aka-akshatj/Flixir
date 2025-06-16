@@ -5,6 +5,7 @@ import {
   SEARCH_USERS,
   SAVE_POST,
   FETCH_SAVED_POSTS,
+  UPDATE_PROFILE,
 } from "../constants/actionTypes";
 
 //Action Creators - returns an action.
@@ -43,5 +44,34 @@ export const getSavedPosts = () => async (dispatch) => {
   } catch (error) {
     console.error("Get saved posts error:", error);
     console.error("Error response:", error.response?.data);
+  }
+};
+
+export const updateProfile = (profileData) => async (dispatch) => {
+  try {
+    console.log("Updating profile with data:", {
+      ...profileData,
+      profilePictureLength: profileData.profilePicture
+        ? profileData.profilePicture.length
+        : 0,
+    });
+    const { data } = await api.updateProfile(profileData);
+    console.log("Update profile response:", data);
+    const action = { type: UPDATE_PROFILE, payload: data.user };
+    dispatch(action);
+
+    // Update localStorage with new user data
+    const profile = JSON.parse(localStorage.getItem("profile"));
+    if (profile) {
+      profile.result = data.user;
+      localStorage.setItem("profile", JSON.stringify(profile));
+      console.log("Updated localStorage with new user data");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Update profile error:", error);
+    console.error("Error response:", error.response?.data);
+    throw error;
   }
 };

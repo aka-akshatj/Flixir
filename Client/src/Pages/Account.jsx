@@ -14,20 +14,24 @@ import {
 import UserLogo from "../img/user.png";
 import { useSelector, useDispatch } from "react-redux";
 import { updatePost, getUserPosts } from "../actions/posts";
+import { updateProfile } from "../actions/users";
+import ImageCropModal from "../components/ImageCropModal/ImageCropModal";
 
 const Account = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
+    username: "",
+    name: "",
+    about: "",
+    profilePicture: "",
   });
   const [editingPost, setEditingPost] = useState(null);
   const [postEditForm, setPostEditForm] = useState({
     caption: "",
     tags: "",
   });
+  const [showImageCropModal, setShowImageCropModal] = useState(false);
   const { posts } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
 
@@ -41,10 +45,10 @@ const Account = () => {
   useEffect(() => {
     if (user?.result) {
       setEditForm({
-        firstName:
-          user.result.firstName || user.result.name?.split(" ")[0] || "",
-        lastName: user.result.lastName || user.result.name?.split(" ")[1] || "",
-        email: user.result.email || "",
+        username: user.result.username || "",
+        name: user.result.name || "",
+        about: user.result.about || "",
+        profilePicture: user.result.profilePicture || "",
       });
     }
   }, [user]);
@@ -60,10 +64,29 @@ const Account = () => {
     });
   };
 
-  const handleSaveProfile = () => {
-    // Here you would typically make an API call to update the user profile
-    console.log("Saving profile:", editForm);
-    setIsEditing(false);
+  const handleSaveProfile = async () => {
+    try {
+      console.log("Saving profile with form data:", {
+        ...editForm,
+        profilePictureLength: editForm.profilePicture
+          ? editForm.profilePicture.length
+          : 0,
+      });
+
+      const result = await dispatch(updateProfile(editForm));
+      console.log("Profile save result:", result);
+
+      if (result) {
+        // Update local user state
+        const updatedProfile = JSON.parse(localStorage.getItem("profile"));
+        setUser(updatedProfile);
+        setIsEditing(false);
+        console.log("Profile updated successfully, editing mode disabled");
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      // You could add error handling here (e.g., show error message)
+    }
   };
 
   const handleEditPost = (post) => {
@@ -107,6 +130,31 @@ const Account = () => {
     });
   };
 
+  const handleImageCropSave = (croppedImageUrl) => {
+    console.log("Saving cropped image:", {
+      imageLength: croppedImageUrl ? croppedImageUrl.length : 0,
+      imagePreview: croppedImageUrl
+        ? croppedImageUrl.substring(0, 50) + "..."
+        : "No image",
+    });
+
+    setEditForm({
+      ...editForm,
+      profilePicture: croppedImageUrl,
+    });
+    setShowImageCropModal(false);
+
+    console.log("Updated edit form with new profile picture");
+  };
+
+  const handleImageCropClose = () => {
+    setShowImageCropModal(false);
+  };
+
+  const handleCameraClick = () => {
+    setShowImageCropModal(true);
+  };
+
   // Fetch user posts when component mounts
   useEffect(() => {
     if (user?.result) {
@@ -138,59 +186,120 @@ const Account = () => {
             {/* Profile Picture */}
             <div className="relative group">
               <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white/20 group-hover:border-indigo-400 transition-all duration-300">
-                {user.result.imageUrl ? (
+                {user.result.profilePicture || user.result.imageUrl ? (
                   <img
-                    src={user.result.imageUrl}
-                    alt={user.result.name}
+                    src={user.result.profilePicture || user.result.imageUrl}
+                    alt={user.result.name || user.result.username}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <img
-                    src={UserLogo}
-                    alt="Profile"
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                    {(user.result.name || user.result.username)
+                      ?.charAt(0)
+                      ?.toUpperCase() || "U"}
+                  </div>
                 )}
               </div>
-              <button className="absolute bottom-2 right-2 w-10 h-10 bg-indigo-500 hover:bg-indigo-600 rounded-full flex items-center justify-center text-white transition-colors duration-300">
-                <FontAwesomeIcon icon={faCamera} className="text-sm" />
-              </button>
+              {isEditing && (
+                <button
+                  onClick={handleCameraClick}
+                  className="absolute bottom-2 right-2 w-10 h-10 bg-indigo-500 hover:bg-indigo-600 rounded-full flex items-center justify-center text-white transition-colors duration-300"
+                  title="Change profile picture"
+                >
+                  <FontAwesomeIcon icon={faCamera} className="text-sm" />
+                </button>
+              )}
             </div>
 
             {/* Profile Info */}
             <div className="flex-1 text-center md:text-left">
               {isEditing ? (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Username *
+                    </label>
                     <input
                       type="text"
-                      name="firstName"
-                      value={editForm.firstName}
+                      name="username"
+                      value={editForm.username}
                       onChange={handleInputChange}
-                      placeholder="First Name"
-                      className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                    <input
-                      type="text"
-                      name="lastName"
-                      value={editForm.lastName}
-                      onChange={handleInputChange}
-                      placeholder="Last Name"
-                      className="px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      placeholder="Enter username"
+                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                      required
                     />
                   </div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={editForm.email}
-                    onChange={handleInputChange}
-                    placeholder="Email"
-                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Display Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={editForm.name}
+                      onChange={handleInputChange}
+                      placeholder="Enter your display name"
+                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      About
+                    </label>
+                    <textarea
+                      name="about"
+                      value={editForm.about}
+                      onChange={handleInputChange}
+                      placeholder="Tell us about yourself..."
+                      rows={3}
+                      className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                      maxLength={500}
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      {editForm.about.length}/500 characters
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Profile Picture
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20">
+                        {editForm.profilePicture ? (
+                          <img
+                            src={editForm.profilePicture}
+                            alt="Profile preview"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold">
+                            {(editForm.name || editForm.username)
+                              ?.charAt(0)
+                              ?.toUpperCase() || "U"}
+                          </div>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleCameraClick}
+                        className="px-4 py-2 bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 rounded-lg transition-colors duration-150 text-sm"
+                      >
+                        <FontAwesomeIcon icon={faCamera} className="mr-2" />
+                        {editForm.profilePicture
+                          ? "Change Picture"
+                          : "Add Picture"}
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="flex gap-3">
                     <button
                       onClick={handleSaveProfile}
-                      className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors duration-300"
+                      className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition-colors duration-300 font-medium"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
                     >
                       Save Changes
                     </button>
@@ -209,9 +318,7 @@ const Account = () => {
                       className="text-2xl md:text-3xl font-bold text-white"
                       style={{ fontFamily: "Poppins, sans-serif" }}
                     >
-                      {user.result.name ||
-                        `${user.result.firstName} ${user.result.lastName}` ||
-                        user.result.username}
+                      {user.result.name || user.result.username}
                     </h1>
                     <button
                       onClick={handleEditToggle}
@@ -222,7 +329,11 @@ const Account = () => {
                     </button>
                   </div>
 
-                  <div className="space-y-2 text-slate-300">
+                  <div className="space-y-2 text-slate-300 mb-4">
+                    <div className="flex items-center justify-center md:justify-start gap-2">
+                      <span className="text-indigo-400">@</span>
+                      <span>{user.result.username}</span>
+                    </div>
                     <div className="flex items-center justify-center md:justify-start gap-2">
                       <FontAwesomeIcon
                         icon={faEnvelope}
@@ -243,6 +354,14 @@ const Account = () => {
                       </span>
                     </div>
                   </div>
+
+                  {user.result.about && (
+                    <div className="text-center md:text-left">
+                      <p className="text-slate-300 text-sm leading-relaxed bg-white/5 rounded-lg p-3 border border-white/10">
+                        {user.result.about}
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -495,6 +614,14 @@ const Account = () => {
           </div>
         </div>
       )}
+
+      {/* Image Crop Modal */}
+      <ImageCropModal
+        isOpen={showImageCropModal}
+        onClose={handleImageCropClose}
+        onSave={handleImageCropSave}
+        currentImage={editForm.profilePicture}
+      />
     </div>
   );
 };

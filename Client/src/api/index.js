@@ -25,6 +25,9 @@ export const savePost = (postId) => API.post(`/user/save-post/${postId}`);
 
 export const getSavedPosts = () => API.get("/user/saved-posts");
 
+export const updateProfile = (profileData) =>
+  API.patch("/user/profile", profileData);
+
 export const fetchPost = (id) => API.get(`/posts/${id}`);
 
 export const createPost = (newPost) => API.post("/posts", newPost);
