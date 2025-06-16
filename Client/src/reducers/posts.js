@@ -5,6 +5,7 @@
 import {
   CREATE,
   FETCH_ALL,
+  FETCH_USER_POSTS,
   UPDATE,
   DELETE,
   LIKE,
@@ -30,6 +31,8 @@ const reducer = (
     case CMT_END_LOADING:
       return { ...state, cmtLoading: false };
     case FETCH_ALL:
+      return { ...state, posts: action.payload };
+    case FETCH_USER_POSTS:
       return { ...state, posts: action.payload };
     case FETCH_POST:
       return { ...state, post: action.payload };

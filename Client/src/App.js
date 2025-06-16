@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
 import {
   BrowserRouter as Router,
   Routes,
@@ -28,11 +27,10 @@ function App() {
   return (
     <Router>
       <div>
-        
         <Navbar></Navbar>
-      
+
         <MobileMenu></MobileMenu>
-        
+
         <div className="page-body">
           {/* <div className="userPanel">{<UserPanel></UserPanel>}</div> */}
           <div className="pages containers">

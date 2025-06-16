@@ -14,6 +14,20 @@ export const getPosts = async (req, res) => {
   }
 };
 
+export const getUserPosts = async (req, res) => {
+  try {
+    //if userId doesn't exist => not authorized
+    if (!req.userId) return res.json({ message: "Unauthenticated" });
+
+    //get posts created by the current user
+    const userPosts = await PostMessage.find({ creator: req.userId });
+    res.status(200).json(userPosts);
+  } catch (error) {
+    //if unable to get user posts
+    res.status(404).json({ message: error.message });
+  }
+};
+
 export const getPost = async (req, res) => {
   const { id } = req.params;
 

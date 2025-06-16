@@ -2,6 +2,8 @@
 
 export const CREATE = "CREATE";
 export const FETCH_ALL = "FETCH_ALL";
+export const FETCH_USER_POSTS = "FETCH_USER_POSTS";
+export const SEARCH_USERS = "SEARCH_USERS";
 export const FETCH_POST = "FETCH_POST";
 export const UPDATE = "UPDATE";
 export const DELETE = "DELETE";

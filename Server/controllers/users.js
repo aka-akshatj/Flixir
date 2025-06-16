@@ -81,3 +81,29 @@ export const signup = async (req, res) => {
     });
   }
 };
+
+export const searchUsers = async (req, res) => {
+  try {
+    const { searchQuery } = req.query;
+
+    if (!searchQuery) {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    // Create search criteria for users
+    const searchCriteria = {
+      $or: [
+        // Search by name (case insensitive)
+        { name: { $regex: searchQuery, $options: "i" } },
+        // Search by username (case insensitive)
+        { username: { $regex: searchQuery, $options: "i" } },
+      ],
+    };
+
+    // Find users but exclude password field
+    const users = await User.find(searchCriteria).select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

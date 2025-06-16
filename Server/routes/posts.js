@@ -4,6 +4,7 @@ import express from "express";
 
 import {
   getPosts,
+  getUserPosts,
   getPost,
   createPost,
   updatePost,
@@ -16,6 +17,7 @@ import auth from "../middleware/auth.js"; //authorization middleware
 const router = express.Router(); //routes the application
 
 router.get("/", getPosts); //for getting all the posts
+router.get("/user/posts", auth, getUserPosts); //for getting user's posts
 router.get("/:id", getPost); //for getting a specific post using id
 
 router.post("/", auth, createPost); //for submitting a post

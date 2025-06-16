@@ -3,13 +3,35 @@
 @tailwind utilities;
 
 :root{
-    --main-blue: #3D4FC3;
-    --main-blue-dark: #2B3890;
-    --main-purple: #9e67d5;
-    --main-purple-dark: #8659B9;
-    --light: #fff;
-    --light-2: #f1f1f1;
-    --inactive: #9c9c9c;
+    /* Dark Theme Colors */
+    --main-blue: #6366f1;
+    --main-blue-dark: #4f46e5;
+    --main-purple: #a855f7;
+    --main-purple-dark: #9333ea;
+    --accent-cyan: #06b6d4;
+    --accent-pink: #ec4899;
+
+    /* Dark Backgrounds */
+    --dark-primary: #0f0f23;
+    --dark-secondary: #1a1a2e;
+    --dark-tertiary: #16213e;
+    --dark-card: #1e1e2e;
+    --dark-surface: #2a2a3e;
+
+    /* Light variants for contrast */
+    --light: #ffffff;
+    --light-2: #f8fafc;
+    --light-dark: #e2e8f0;
+
+    /* Text colors */
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --inactive: #475569;
+
+    /* Borders and dividers */
+    --border-color: #334155;
+    --border-light: #475569;
 }
 
 *,
@@ -41,7 +63,88 @@ img {
 }
 
 body{
-    background-color: var(--light-2);
+    background: linear-gradient(135deg, var(--dark-primary) 0%, var(--dark-secondary) 30%, var(--dark-tertiary) 70%, #0f172a 100%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 80px; /* Space for mobile navigation */
+}
+
+@media (min-width: 1024px) {
+    body {
+        padding-bottom: 0; /* Remove padding on desktop */
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 15, 35, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #4f46e5, #9333ea);
+}
+
+/* Smooth animations */
+* {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glass effect utility */
+.glass-effect {
+    background: rgba(30, 30, 46, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animations */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+}
+
+/* Pulse animation for loading states */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Hover effects */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .containers{
@@ -66,22 +169,47 @@ body{
 }
 
 .main-btn{
-    background-color: var(--main-blue);
+    background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-purple) 100%);
     color: white;
     padding: 0.8rem 1.2rem;
-    border-radius: 0.5rem;
+    border-radius: 0.8rem;
+    border: none;
     cursor: pointer;
-    transition: all 0.25s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    font-weight: 500;
 }
 
 .main-btn:hover{
-    transition: all 0.25s ease-in-out;
-    background-color: var(--main-blue-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, var(--main-blue-dark) 0%, var(--main-purple-dark) 100%);
+    transition: all 0.3s ease-in-out;
 }
 
 .divider{
-    color: var(--inactive);
-    
+    color: var(--text-muted);
+    position: relative;
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
 }
 
 @media screen and (max-width:1316px){
