@@ -9,16 +9,19 @@ import {
   faPenToSquare,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showForm } from "../../actions/form";
 import { deletePost, likePost } from "../../actions/posts";
+import { savePost } from "../../actions/users";
 import { useNavigate } from "react-router-dom";
 
 const Post = ({ post, setCurrentID }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [likes, setLikes] = useState(post?.likes);
+  const [isSaved, setIsSaved] = useState(false);
   const user = JSON.parse(localStorage.getItem("profile"));
+  const savedPosts = useSelector((state) => state.savedPosts);
 
   //Edit button
   const handleEdit = () => {
@@ -53,6 +56,28 @@ const Post = ({ post, setCurrentID }) => {
   //opening the post
   const openPost = () => {
     navigate(`/posts/${post._id}`);
+  };
+
+  //Check if post is saved
+  React.useEffect(() => {
+    console.log("Checking if post is saved:", post._id);
+    console.log("Current saved posts:", savedPosts);
+    if (savedPosts && Array.isArray(savedPosts)) {
+      const isCurrentlySaved = savedPosts.some(
+        (savedPost) => savedPost._id === post._id
+      );
+      console.log("Is post saved?", isCurrentlySaved);
+      setIsSaved(isCurrentlySaved);
+    }
+  }, [savedPosts, post._id]);
+
+  //Save/Unsave post
+  const handleSave = () => {
+    console.log("Save button clicked for post:", post._id);
+    console.log("Current saved state:", isSaved);
+    dispatch(savePost(post._id));
+    // Don't toggle immediately, let the API response handle it
+    // setIsSaved(!isSaved);
   };
 
   return (
@@ -185,12 +210,27 @@ const Post = ({ post, setCurrentID }) => {
           </div>
 
           {/* Save Button */}
-          <button
-            className="text-slate-400 transition-colors duration-200 hover:text-yellow-500"
-            title="Save post"
-          >
-            <FontAwesomeIcon icon={faBookmark} className="text-sm" />
-          </button>
+          {user?.result?.name ? (
+            <button
+              className={`transition-colors duration-200 ${
+                isSaved
+                  ? "text-yellow-500"
+                  : "text-slate-400 hover:text-yellow-500"
+              }`}
+              onClick={handleSave}
+              title={isSaved ? "Unsave post" : "Save post"}
+            >
+              <FontAwesomeIcon icon={faBookmark} className="text-sm" />
+            </button>
+          ) : (
+            <button
+              className="text-slate-400 cursor-not-allowed opacity-50"
+              disabled
+              title="Login to save"
+            >
+              <FontAwesomeIcon icon={faBookmark} className="text-sm" />
+            </button>
+          )}
         </div>
 
         {/* Tags */}

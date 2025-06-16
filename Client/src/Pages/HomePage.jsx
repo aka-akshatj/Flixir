@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Posts from "../containers/Posts/Posts";
 import { useDispatch, useSelector } from "react-redux";
 import { getPosts, getUserPosts } from "../actions/posts";
+import { getSavedPosts } from "../actions/users";
 import Form from "../components/Form/Form";
 import UserPanel from "../containers/UserPanel/UserPanel";
 
@@ -20,6 +21,13 @@ const HomePage = () => {
       dispatch(getUserPosts());
     }
   }, [dispatch, currentID, activeTab, user]);
+
+  useEffect(() => {
+    // Load saved posts when user is logged in
+    if (user?.result) {
+      dispatch(getSavedPosts());
+    }
+  }, [dispatch, user]);
 
   return (
     <div className="min-h-screen">

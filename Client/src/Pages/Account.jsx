@@ -8,9 +8,12 @@ import {
   faHeart,
   faComment,
   faImage,
+  faSave,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import UserLogo from "../img/user.png";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updatePost, getUserPosts } from "../actions/posts";
 
 const Account = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -20,7 +23,13 @@ const Account = () => {
     lastName: "",
     email: "",
   });
+  const [editingPost, setEditingPost] = useState(null);
+  const [postEditForm, setPostEditForm] = useState({
+    caption: "",
+    tags: "",
+  });
   const { posts } = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
 
   // Filter user's posts
   const userPosts = posts.filter(
@@ -56,6 +65,54 @@ const Account = () => {
     console.log("Saving profile:", editForm);
     setIsEditing(false);
   };
+
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setPostEditForm({
+      caption: post.caption || "",
+      tags: post.tags ? post.tags.join(", ") : "",
+    });
+  };
+
+  const handleCancelPostEdit = () => {
+    setEditingPost(null);
+    setPostEditForm({
+      caption: "",
+      tags: "",
+    });
+  };
+
+  const handlePostEditChange = (e) => {
+    setPostEditForm({
+      ...postEditForm,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSavePost = () => {
+    const updatedPost = {
+      ...editingPost,
+      caption: postEditForm.caption,
+      tags: postEditForm.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag),
+    };
+
+    dispatch(updatePost(editingPost._id, updatedPost));
+    setEditingPost(null);
+    setPostEditForm({
+      caption: "",
+      tags: "",
+    });
+  };
+
+  // Fetch user posts when component mounts
+  useEffect(() => {
+    if (user?.result) {
+      dispatch(getUserPosts());
+    }
+  }, [dispatch, user]);
 
   if (!user?.result) {
     return (
@@ -250,24 +307,56 @@ const Account = () => {
           </h2>
 
           {userPosts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {userPosts.map((post) => (
                 <div
                   key={post._id}
-                  className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer"
+                  className="group relative rounded-xl overflow-hidden glass-effect border border-white/10"
                 >
-                  <img
-                    src={post.selectedFile}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-300"></div>
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="text-center text-white">
-                      <h3 className="font-semibold text-sm mb-2">
-                        {post.title}
-                      </h3>
-                      <div className="flex items-center justify-center gap-4 text-xs">
+                  {/* Post Image */}
+                  <div className="aspect-square overflow-hidden">
+                    <img
+                      src={post.selectedFile}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    />
+                  </div>
+
+                  {/* Post Info */}
+                  <div className="p-4">
+                    <h3
+                      className="font-semibold text-white text-sm mb-2 line-clamp-2"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {post.title}
+                    </h3>
+
+                    {post.caption && (
+                      <p className="text-slate-300 text-xs mb-3 line-clamp-2">
+                        {post.caption}
+                      </p>
+                    )}
+
+                    {post.tags && post.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {post.tags.slice(0, 3).map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 text-xs bg-indigo-500/20 text-indigo-300 rounded-full"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                        {post.tags.length > 3 && (
+                          <span className="px-2 py-1 text-xs bg-slate-500/20 text-slate-400 rounded-full">
+                            +{post.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-xs text-slate-400">
                         <span className="flex items-center gap-1">
                           <FontAwesomeIcon icon={faHeart} />
                           {post.likes?.length || 0}
@@ -277,6 +366,14 @@ const Account = () => {
                           {post.comments?.length || 0}
                         </span>
                       </div>
+
+                      <button
+                        onClick={() => handleEditPost(post)}
+                        className="p-2 rounded-full bg-indigo-500/20 text-indigo-400 hover:bg-indigo-500/30 transition-colors duration-150"
+                        title="Edit post"
+                      >
+                        <FontAwesomeIcon icon={faEdit} className="text-xs" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -300,6 +397,104 @@ const Account = () => {
           )}
         </div>
       </div>
+
+      {/* Edit Post Modal */}
+      {editingPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="w-full max-w-2xl glass-effect rounded-2xl border border-white/10 overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <h3
+                className="text-xl font-semibold text-white"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                Edit Post
+              </h3>
+              <button
+                onClick={handleCancelPostEdit}
+                className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-white transition-colors duration-150"
+              >
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              <div className="flex gap-6">
+                {/* Post Image */}
+                <div className="w-48 h-48 rounded-xl overflow-hidden flex-shrink-0">
+                  <img
+                    src={editingPost.selectedFile}
+                    alt={editingPost.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Edit Form */}
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h4
+                      className="font-semibold text-white mb-2"
+                      style={{ fontFamily: "Poppins, sans-serif" }}
+                    >
+                      {editingPost.title}
+                    </h4>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Caption
+                    </label>
+                    <textarea
+                      name="caption"
+                      value={postEditForm.caption}
+                      onChange={handlePostEditChange}
+                      placeholder="Write a caption for your post..."
+                      rows={4}
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-150 resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Hashtags
+                    </label>
+                    <input
+                      type="text"
+                      name="tags"
+                      value={postEditForm.tags}
+                      onChange={handlePostEditChange}
+                      placeholder="travel, photography, sunset (separate with commas)"
+                      className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-150"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Separate hashtags with commas
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-white/10">
+              <button
+                onClick={handleCancelPostEdit}
+                className="px-6 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors duration-150"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSavePost}
+                className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl hover:from-indigo-600 hover:to-purple-600 transition-colors duration-150 font-medium"
+                style={{ fontFamily: "Poppins, sans-serif" }}
+              >
+                <FontAwesomeIcon icon={faSave} className="mr-2" />
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

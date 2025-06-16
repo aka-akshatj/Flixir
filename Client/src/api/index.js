@@ -21,6 +21,10 @@ export const fetchUserPosts = () => API.get("/posts/user/posts");
 export const searchUsers = (searchQuery) =>
   API.get(`/user/search?searchQuery=${searchQuery}`);
 
+export const savePost = (postId) => API.post(`/user/save-post/${postId}`);
+
+export const getSavedPosts = () => API.get("/user/saved-posts");
+
 export const fetchPost = (id) => API.get(`/posts/${id}`);
 
 export const createPost = (newPost) => API.post("/posts", newPost);

@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.js"; //User Model
+import PostMessage from "../models/postMessage.js"; //Post Model
 
 export const signin = async (req, res) => {
   const { email, password } = req.body;
@@ -104,6 +105,77 @@ export const searchUsers = async (req, res) => {
     const users = await User.find(searchCriteria).select("-password");
     res.status(200).json(users);
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const savePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId;
+
+    if (!postId) {
+      return res.status(400).json({ message: "Post ID is required" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Initialize savedPosts array if it doesn't exist (for existing users)
+    if (!user.savedPosts) {
+      user.savedPosts = [];
+    }
+
+    // Check if post is already saved
+    const isPostSaved = user.savedPosts.includes(postId);
+
+    if (isPostSaved) {
+      // Remove from saved posts (unsave)
+      user.savedPosts = user.savedPosts.filter((id) => id !== postId);
+    } else {
+      // Add to saved posts (save)
+      user.savedPosts.push(postId);
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      message: isPostSaved
+        ? "Post unsaved successfully"
+        : "Post saved successfully",
+      savedPosts: user.savedPosts,
+    });
+  } catch (error) {
+    console.error("Save post error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getSavedPosts = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Initialize savedPosts array if it doesn't exist (for existing users)
+    if (!user.savedPosts) {
+      user.savedPosts = [];
+      await user.save();
+    }
+
+    // Get all saved posts by their IDs
+    const savedPosts = await PostMessage.find({
+      _id: { $in: user.savedPosts },
+    });
+
+    res.status(200).json(savedPosts);
+  } catch (error) {
+    console.error("Get saved posts error:", error);
     res.status(500).json({ message: error.message });
   }
 };
